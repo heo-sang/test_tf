@@ -25,7 +25,7 @@ POLICY
 }
 resource "aws_security_group" "snet2_2_sg" {
   name        = "snet2_2_sg"
-  description = "eks traffic sg"
+  description = "all in, all out"
   vpc_id      = aws_vpc.snet2_2_vpc.id
 
   dynamic "ingress" {
@@ -33,7 +33,7 @@ resource "aws_security_group" "snet2_2_sg" {
       { from_port = 22, to_port = 22, protocol = "tcp" },
       { from_port = 2049, to_port = 2049, protocol = "tcp" },
       { from_port = 31393, to_port = 31393, protocol = "tcp" },
-      { from_port = 8080, to_port = 9090, protocol = "tcp" },
+      { from_port = 8080, to_port = 11000, protocol = "tcp" },
       { from_port = 80, to_port = 80, protocol = "tcp" },
       { from_port = 443, to_port = 443, protocol = "tcp" }
     ]
