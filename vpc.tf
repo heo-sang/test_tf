@@ -28,6 +28,7 @@ resource "aws_subnet" "snet2_2_public" {
   tags = tomap({
     "Name"                                      = "snet2_2_public_subnet${count.index+1}",
     "kubernetes.io/cluster/${var.cluster-name}" = "shared",
+    "kubernetes.io/role/elb" = "1"
   })
 }
 resource "aws_subnet" "snet2_2_private" {

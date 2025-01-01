@@ -7,7 +7,7 @@
 
 resource "aws_iam_role" "snet2_2_cluster" {
   name = "snet2_2_cluster"
-
+  
   assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
@@ -23,6 +23,7 @@ resource "aws_iam_role" "snet2_2_cluster" {
 }
 POLICY
 }
+
 resource "aws_security_group" "snet2_2_sg" {
   name        = "snet2_2_sg"
   description = "all in, all out"
@@ -57,20 +58,29 @@ resource "aws_security_group" "snet2_2_sg" {
   }
 }
 
+
+
 resource "aws_eks_cluster" "snet2_2_cluster" {
   name     = var.cluster-name
   role_arn = aws_iam_role.snet2_2_cluster.arn
-
+  
   vpc_config {
     security_group_ids = [aws_security_group.snet2_2_sg.id]
     subnet_ids         = aws_subnet.snet2_2_public[*].id
   }
+  
 
   depends_on = [
     aws_iam_role_policy_attachment.snet2_2_cluster_AmazonEKSClusterPolicy,
     aws_iam_role_policy_attachment.snet2_2_cluster_AmazonEKSVPCResourceController,
   ]
 }
+
+# resource "authentication_mode" "snet2_2_authentication_mode" {
+#   cluster_name = aws_eks_cluster.snet2_2_cluster.name
+#   authentication_mode = "API_AND_CONFIG_MAP"
+# }
+
 
 resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
@@ -81,4 +91,19 @@ resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSVPCResourceC
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
   role       = aws_iam_role.snet2_2_cluster.name
 }
-
+resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSLoadBalancingPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSLoadBalancingPolicy"
+  role       = aws_iam_role.snet2_2_cluster.name
+}
+resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSComputePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSComputePolicy"
+  role       = aws_iam_role.snet2_2_cluster.name
+}
+resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSBlockStoragePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSBlockStoragePolicy"
+  role       = aws_iam_role.snet2_2_cluster.name
+}
+resource "aws_iam_role_policy_attachment" "snet2_2_cluster_AmazonEKSNetworkingPolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSNetworkingPolicy"
+  role       = aws_iam_role.snet2_2_cluster.name
+}
